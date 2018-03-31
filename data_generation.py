@@ -33,13 +33,26 @@ control_validation = custom_loader(validation_set_tensor, validation_labels_tens
 # encrypted data dimensions (n_samples, n_features + n) where n = 1 in experiment
 # so we have 250 samples x 2 features for both training and annotations
 
-for (elem in data[0, :])   
- {      t = 0.01+1j        
- 		x = (cmath.exp(t*elem)).real       
- 		 y = (cmath.exp(t*elem).imag     }
 
-for 
+encrypted_data = []
+encrypted_annotations = []
+t = 0.01+1j
+for i in range(250):
+	point = data[i]
+	encrypted_data.append([cmath.exp(t*point).real,cmath.exp(t*point).imag])
+	point2 = annotations[i]
+	encrypted_annotations.append([cmath.exp(t*point2).real,cmath.exp(t*point2).imag])
 
+encrypted_data = np.stack(encrypted_data)
+encrypted_annotations = np.stack(encrypted_annotations)
+
+test_training_set = torch.Tensor(encrypted_data[:200,:])
+test_training_labels = torch.Tensor(encrypted_annotations[:200,:])
+test_validation_set = torch.Tensor(encrypted_data[200:,:])
+test_validation_labels = torch.Tensor(encrypted_annotations[200:,:])
+
+test_training = custom_loader(test_training_set, test_training_labels, 200)
+test_validation = custom_loader(test_validation_set, test_validation_labels, 50)
 
 
 
