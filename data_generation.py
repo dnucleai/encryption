@@ -13,8 +13,9 @@ from dataloader import custom_loader
 # generate some test data and serialize it and save it
 # dimensions n_samples x n_features - 250 x 1
 # targets 250 annotations
+multiplier = 3.14159265 * 15
 prng = RandomState(3123)
-data = prng.rand(5000,1) * 3.14159265
+data = prng.rand(5000,1) * multiplier
 annotations = np.sin(data)
 
 training_set = data[:4500,:]
@@ -39,9 +40,12 @@ encrypted_annotations = []
 t = 0.01+1j
 for i in range(5000):
 	point = data[i]
-	encrypted_data.append([cmath.exp(t*point).real,cmath.exp(t*point).imag])
+	# encrypted_data.append([multiplier * cmath.exp(t*point).real, \
+	# 							multiplier * cmath.exp(t*point).imag])
+	encrypted_data.append([point[0]**3])
 	point2 = annotations[i]
-	encrypted_annotations.append([cmath.exp(t*point2).real,cmath.exp(t*point2).imag])
+	# encrypted_annotations.append([cmath.exp(t*point2).real,cmath.exp(t*point2).imag])
+	encrypted_annotations.append([point2[0]**3])
 
 encrypted_data = np.stack(encrypted_data)
 encrypted_annotations = np.stack(encrypted_annotations)

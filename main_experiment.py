@@ -9,7 +9,7 @@ from data_generation import control_training, control_validation, test_training,
 from simple_nn import Net
 
 control_neural_network = Net(1,1,50)
-test_neural_network = Net(2,2,50)
+test_neural_network = Net(1,1,50)
 
 control_training = DataLoader(control_training, batch_size=4, shuffle=False)
 control_validation = DataLoader(control_validation, batch_size=4, shuffle=False)
@@ -19,8 +19,8 @@ test_validation = DataLoader(test_validation, batch_size=4, shuffle=False)
 
 epochs = 25
 
-optimizer_control = torch.optim.Adam(control_neural_network.parameters(), lr=.0001)
-optimizer_test = torch.optim.Adam(test_neural_network.parameters(), lr=0.0001)
+optimizer_control = torch.optim.Adam(control_neural_network.parameters(), lr=.00001)
+optimizer_test = torch.optim.Adam(test_neural_network.parameters(), lr=0.00001)
 criterion = nn.MSELoss()
 
 control_loss_list = []
@@ -28,6 +28,7 @@ control_loss_list = []
 # begin control experiment
 
 for epoch in range(epochs):
+	print "epoch", epoch
 	for idx_control, sample_control in enumerate(control_training):
 		control_input, control_label = Variable(sample_control["training_data_point"]), \
 										Variable(sample_control["label"])
@@ -55,10 +56,11 @@ print "total control loss: ", total_control_loss
 
 # begin experiment
 for epoch in range(epochs):
+	print "epoch", epoch
 	for idx_sample, sample_exp in enumerate(test_training):
-		test_input, test_label = Variable(sample_control["training_data_point"]), \
-										Variable(sample_control["label"])
-		test_prediction = test_neural_network.forward(control_input)
+		test_input, test_label = Variable(sample_exp["training_data_point"]), \
+										Variable(sample_exp["label"])
+		test_prediction = test_neural_network.forward(test_input)
 		test_loss = criterion(test_prediction, test_label)
 		if idx_sample % 2000 == 0:
 			print "epoch: ", epoch, "idx_sample: ", idx_sample, "loss: ", test_loss
@@ -70,15 +72,14 @@ for epoch in range(epochs):
 test_loss_list = []
 
 for idx_sample, sample_exp in enumerate(test_validation):
-		test_input, test_label = Variable(sample_control["training_data_point"]), \
-										Variable(sample_control["label"])
-		test_prediction = test_neural_network.forward(control_input)
+		test_input, test_label = Variable(sample_exp["training_data_point"]), \
+										Variable(sample_exp["label"])
+		test_prediction = test_neural_network.forward(test_input)
 		test_loss = criterion(test_prediction, test_label)
 		test_loss_list.append(test_loss)
 
 total_test_loss = sum(test_loss_list)
 
-print "total test loss: ", total_test_loss
-
 print "total control loss: ", total_control_loss
+print "total test loss: ", total_test_loss
 
