@@ -42,10 +42,10 @@ for i in range(5000):
 	point = data[i]
 	# encrypted_data.append([multiplier * cmath.exp(t*point).real, \
 	# 							multiplier * cmath.exp(t*point).imag])
-	encrypted_data.append([point[0]**3])
+	encrypted_data.append([point[0] + 1.4])
 	point2 = annotations[i]
 	# encrypted_annotations.append([cmath.exp(t*point2).real,cmath.exp(t*point2).imag])
-	encrypted_annotations.append([point2[0]**3])
+	encrypted_annotations.append([point2[0] + 1.4])
 
 encrypted_data = np.stack(encrypted_data)
 encrypted_annotations = np.stack(encrypted_annotations)
