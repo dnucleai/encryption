@@ -23,7 +23,7 @@ optimizer_control = torch.optim.Adam(control_neural_network.parameters(), lr=.00
 optimizer_test = torch.optim.Adam(test_neural_network.parameters(), lr=0.0001)
 criterion = nn.MSELoss()
 
-control_loss = []
+control_loss_list = []
 
 # begin control experiment
 
@@ -47,9 +47,9 @@ for idx_control, sample_control in enumerate(control_validation):
 									Variable(sample_control["label"])
 	control_prediction = control_neural_network.forward(control_input)
 	control_validation_loss = criterion(control_prediction, control_label)
-	control_loss.append(control_validation_loss)
+	control_loss_list.append(control_validation_loss)
 
-total_control_loss = sum(control_loss)
+total_control_loss = sum(control_loss_list)
 
 print "total control loss: ", total_control_loss
 
@@ -67,16 +67,16 @@ for epoch in range(epochs):
 		optimizer_test.step()
 		optimizer_test.zero_grad()
 
-test_loss = []
+test_loss_list = []
 
 for idx_sample, sample_exp in enumerate(test_validation):
 		test_input, test_label = Variable(sample_control["training_data_point"]), \
 										Variable(sample_control["label"])
 		test_prediction = test_neural_network.forward(control_input)
 		test_loss = criterion(test_prediction, test_label)
-		test_loss.append(test_loss)
+		test_loss_list.append(test_loss)
 
-total_test_loss = sum(test_loss)
+total_test_loss = sum(test_loss_list)
 
 print "total test loss: ", total_test_loss
 
