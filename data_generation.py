@@ -14,21 +14,21 @@ from dataloader import custom_loader
 # dimensions n_samples x n_features - 250 x 1
 # targets 250 annotations
 prng = RandomState(3123)
-data = prng.randn(250,1)
-annotations = np.sin(prng.randn(250,1))
+data = prng.rand(5000,1) * 3.14159265
+annotations = np.sin(data)
 
-training_set = data[:200,:]
-training_labels = annotations[:200,:]
-validation_set = data[200:,:]
-validation_labels = annotations[200:,:]
+training_set = data[:4500,:]
+training_labels = annotations[:4500,:]
+validation_set = data[4500:,:]
+validation_labels = annotations[4500:,:]
 
 training_set_tensor = torch.Tensor(training_set)
 training_labels_tensor = torch.Tensor(training_labels)
 validation_set_tensor = torch.Tensor(validation_set)
 validation_labels_tensor = torch.Tensor(validation_labels)
 
-control_training = custom_loader(training_set_tensor, training_labels_tensor, 200)
-control_validation = custom_loader(validation_set_tensor, validation_labels_tensor, 50)
+control_training = custom_loader(training_set_tensor, training_labels_tensor, 4500)
+control_validation = custom_loader(validation_set_tensor, validation_labels_tensor, 500)
 
 # encrypted data dimensions (n_samples, n_features + n) where n = 1 in experiment
 # so we have 250 samples x 2 features for both training and annotations
@@ -37,7 +37,7 @@ control_validation = custom_loader(validation_set_tensor, validation_labels_tens
 encrypted_data = []
 encrypted_annotations = []
 t = 0.01+1j
-for i in range(250):
+for i in range(5000):
 	point = data[i]
 	encrypted_data.append([cmath.exp(t*point).real,cmath.exp(t*point).imag])
 	point2 = annotations[i]
@@ -46,13 +46,13 @@ for i in range(250):
 encrypted_data = np.stack(encrypted_data)
 encrypted_annotations = np.stack(encrypted_annotations)
 
-test_training_set = torch.Tensor(encrypted_data[:200,:])
-test_training_labels = torch.Tensor(encrypted_annotations[:200,:])
-test_validation_set = torch.Tensor(encrypted_data[200:,:])
-test_validation_labels = torch.Tensor(encrypted_annotations[200:,:])
+test_training_set = torch.Tensor(encrypted_data[:4500,:])
+test_training_labels = torch.Tensor(encrypted_annotations[:4500,:])
+test_validation_set = torch.Tensor(encrypted_data[4500:,:])
+test_validation_labels = torch.Tensor(encrypted_annotations[4500:,:])
 
-test_training = custom_loader(test_training_set, test_training_labels, 200)
-test_validation = custom_loader(test_validation_set, test_validation_labels, 50)
+test_training = custom_loader(test_training_set, test_training_labels, 4500)
+test_validation = custom_loader(test_validation_set, test_validation_labels, 500)
 
 
 

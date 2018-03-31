@@ -8,23 +8,77 @@ from torch.utils.data import DataLoader
 from data_generation import control_training, control_validation, test_training, test_validation
 from simple_nn import Net
 
-control_neural_network = Net(1,1,1)
-test_neural_network = Net(2,2,2)
+control_neural_network = Net(1,1,50)
+test_neural_network = Net(2,2,50)
 
- DataLoader(bAbiDataset(*d_train), batch_size=batch_size,
-						shuffle=False, num_workers=4, pin_memory=gpu_available)
+control_training = DataLoader(control_training, batch_size=4, shuffle=False)
+control_validation = DataLoader(control_validation, batch_size=4, shuffle=False)
 
-control_training = DataLoader(control_training, batch_size=4, shuffle=false)
-control_validation = DataLoader(control_validation, batch_size=4, shuffle=false)
+test_training = DataLoader(test_training, batch_size=4, shuffle=False)
+test_validation = DataLoader(test_validation, batch_size=4, shuffle=False)
 
-test_training = DataLoader(test_training, batch_size=4, shuffle=false)
-test_validation = DataLoader(test_validation, batch_size=4, shuffle=false)
+epochs = 25
 
-epochs = 5
+optimizer_control = torch.optim.Adam(control_neural_network.parameters(), lr=.0001)
+optimizer_test = torch.optim.Adam(test_neural_network.parameters(), lr=0.0001)
+criterion = nn.MSELoss()
+
+control_loss = []
+
+# begin control experiment
 
 for epoch in range(epochs):
 	for idx_control, sample_control in enumerate(control_training):
-		control_input, control_label = Variable(sample_control["training_data_point"]), 
+		control_input, control_label = Variable(sample_control["training_data_point"]), \
 										Variable(sample_control["label"])
-		control_prediction = control_neural_network(control_input)
-		
+		control_prediction = control_neural_network.forward(control_input)
+		control_loss = criterion(control_prediction, control_label)
+
+		if idx_control % 2000 == 0:
+			print "epoch: ", epoch, "idx_control: ", idx_control, "loss: ", control_loss
+
+		control_loss.backward()
+		optimizer_control.step()
+		optimizer_control.zero_grad()
+
+
+for idx_control, sample_control in enumerate(control_validation):
+	control_input, control_label = Variable(sample_control["training_data_point"]), \
+									Variable(sample_control["label"])
+	control_prediction = control_neural_network.forward(control_input)
+	control_validation_loss = criterion(control_prediction, control_label)
+	control_loss.append(control_validation_loss)
+
+total_control_loss = sum(control_loss)
+
+print "total control loss: ", total_control_loss
+
+# begin experiment
+for epoch in range(epochs):
+	for idx_sample, sample_exp in enumerate(test_training):
+		test_input, test_label = Variable(sample_control["training_data_point"]), \
+										Variable(sample_control["label"])
+		test_prediction = test_neural_network.forward(control_input)
+		test_loss = criterion(test_prediction, test_label)
+		if idx_sample % 2000 == 0:
+			print "epoch: ", epoch, "idx_sample: ", idx_sample, "loss: ", test_loss
+
+		test_loss.backward()
+		optimizer_test.step()
+		optimizer_test.zero_grad()
+
+test_loss = []
+
+for idx_sample, sample_exp in enumerate(test_validation):
+		test_input, test_label = Variable(sample_control["training_data_point"]), \
+										Variable(sample_control["label"])
+		test_prediction = test_neural_network.forward(control_input)
+		test_loss = criterion(test_prediction, test_label)
+		test_loss.append(test_loss)
+
+total_test_loss = sum(test_loss)
+
+print "total test loss: ", total_test_loss
+
+print "total control loss: ", total_control_loss
+
