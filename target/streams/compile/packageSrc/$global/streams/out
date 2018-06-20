@@ -1,0 +1,11 @@
+[0m[[0minfo[0m] [0mPackaging /Users/MarcWuDunn/Documents/encryption/target/scala-2.11/play-getting-started_2.11-1.0-SNAPSHOT-sources.jar ...[0m
+[0m[[0mdebug[0m] [0mInput file mappings:[0m
+[0m[[0mdebug[0m] [0m	application.conf[0m
+[0m[[0mdebug[0m] [0m	  /Users/MarcWuDunn/Documents/encryption/conf/application.conf[0m
+[0m[[0mdebug[0m] [0m	routes[0m
+[0m[[0mdebug[0m] [0m	  /Users/MarcWuDunn/Documents/encryption/conf/routes[0m
+[0m[[0mdebug[0m] [0m	Global.scala[0m
+[0m[[0mdebug[0m] [0m	  /Users/MarcWuDunn/Documents/encryption/app/Global.scala[0m
+[0m[[0mdebug[0m] [0m	controllers/Application.scala[0m
+[0m[[0mdebug[0m] [0m	  /Users/MarcWuDunn/Documents/encryption/app/controllers/Application.scala[0m
+[0m[[0minfo[0m] [0mDone packaging.[0m
