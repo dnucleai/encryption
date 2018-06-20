@@ -1,7 +1,16 @@
-name := "secureml-scala"
+name := """play-getting-started"""
 
-version := "0.1"
+version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.12.6"
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-enablePlugins(JavaAppPackaging)
+scalaVersion := "2.11.7"
+
+libraryDependencies ++= Seq(
+  jdbc,
+  cache,
+  "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
+  ws
+)
+
+libraryDependencies <+= scalaVersion("org.scala-lang" % "scala-compiler" % _ )
